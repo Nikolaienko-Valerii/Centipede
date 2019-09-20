@@ -13,7 +13,10 @@ public class MushroomDamageHandler : MonoBehaviour
     }
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        health--;
+        if (collision.gameObject.name == "Bullet(Clone)")
+        {
+            health--;
+        }
     }
 
     private void ChangeSprite()
