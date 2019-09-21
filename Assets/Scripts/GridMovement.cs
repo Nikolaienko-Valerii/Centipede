@@ -11,15 +11,21 @@ public class GridMovement : MonoBehaviour
     public bool goingForward = true;
     public int health = 1;
     GameObject gameController;
+    Animator animator;
     void Start()
     {
         gameController = GameObject.FindGameObjectWithTag("Controller");
+        animator = gameObject.GetComponent<Animator>();
+        ApplyAnimations();
     }
     void Update()
     {
         if (health == 0) //probably check after making a step
         {
             Die();
+            int x = (int)transform.position.x;
+            int y = (int)transform.position.y;
+            gameController.GetComponent<MushroomController>().AddMushroom(x,y);
         }
         if (Input.GetKeyDown(KeyCode.Space))
         {
@@ -27,9 +33,24 @@ public class GridMovement : MonoBehaviour
         }
     }
 
+    void ApplyAnimations()
+    {
+        if (!isHead)
+        {
+            animator.runtimeAnimatorController = Resources.Load("Tale01") as RuntimeAnimatorController;
+        }
+        else
+        {
+            animator.runtimeAnimatorController = Resources.Load("Head01") as RuntimeAnimatorController;
+        }
+    }
+
     void Die()
     {
-        nextSegment.GetComponent<GridMovement>().BecomeHead();
+        if (nextSegment != null)
+        {
+            nextSegment.GetComponent<GridMovement>().BecomeHead();
+        }
         Destroy(gameObject);
     }
 
@@ -38,16 +59,7 @@ public class GridMovement : MonoBehaviour
     {
         if (!isHead)
         {
-            if (goingForward)
-            {
-                StartCoroutine(GoForward());
-                nextSegment.GetComponent<GridMovement>().goingForward = true;
-            }
-            else
-            {
-                StartCoroutine(GoDown());
-                nextSegment.GetComponent<GridMovement>().goingForward = false;
-            }
+            MakeStepAndTellNext(goingForward);
         }
         else
         {
@@ -60,16 +72,23 @@ public class GridMovement : MonoBehaviour
             int x = (int)currentPosition.x + step;
             int y = (int)currentPosition.y;
             bool isForward = gameController.GetComponent<MushroomController>().IsStepAvailable(x, y);
-            if (isForward)
-            {
-                StartCoroutine(GoForward());
-                nextSegment.GetComponent<GridMovement>().goingForward = true;
-            }
-            else
-            {
-                StartCoroutine(GoDown());
-                nextSegment.GetComponent<GridMovement>().goingForward = false;
-            }
+            MakeStepAndTellNext(isForward);
+        }
+    }
+
+    void MakeStepAndTellNext(bool isForward)
+    {
+        if (isForward)
+        {
+            StartCoroutine(GoForward());
+        }
+        else
+        {
+            StartCoroutine(GoDown());
+        }
+        if (nextSegment != null)
+        {
+            nextSegment.GetComponent<GridMovement>().goingForward = isForward;
         }
     }
 
@@ -91,10 +110,18 @@ public class GridMovement : MonoBehaviour
     //use this if something in the way or centipede splitted
     IEnumerator GoDown()
     {
+        float rotation = 0.5f;
+        if (!goingRight)
+        {
+            rotation = -rotation;
+        }
+        float currentZRotation = transform.rotation.z;
+        transform.rotation = new Quaternion(0, 0, currentZRotation + rotation, 0);
         Vector3 currentPosition = transform.position;
         int x = (int)currentPosition.x;
         int y = (int)currentPosition.y - 1;
         transform.position = new Vector3(x, y, 0);
+        transform.rotation = new Quaternion(0, 0, currentZRotation + 2 * rotation, 0);
         goingRight = !goingRight;
         yield return null;
     }
@@ -102,7 +129,8 @@ public class GridMovement : MonoBehaviour
     void BecomeHead()
     {
         isHead = true;
-        //after finishing step? go down
+        goingForward = false; //TODO head ignores this
+        animator.runtimeAnimatorController = Resources.Load("Head01") as RuntimeAnimatorController;
     }
 
     private void OnCollisionEnter2D(Collision2D collision)

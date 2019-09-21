@@ -11,7 +11,7 @@ public class MushroomController : MonoBehaviour
     {
         gridHeight = (int)(2 * Camera.main.orthographicSize);
         gridWidth = gridHeight * 4 / 3; //pretty hardcoded but our ratio is always 4:3? so who cares :)
-        MushroomsGrid = new bool[gridHeight, gridWidth];
+        MushroomsGrid = new bool[gridWidth, gridHeight];
         GenerateMushrooms();
     }
 
