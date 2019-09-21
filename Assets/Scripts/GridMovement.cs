@@ -12,6 +12,7 @@ public class GridMovement : MonoBehaviour
     public int health = 1;
     GameObject gameController;
     Animator animator;
+    public float delay = 0.01f;
     void Start()
     {
         gameController = GameObject.FindGameObjectWithTag("Controller");
@@ -29,7 +30,7 @@ public class GridMovement : MonoBehaviour
         }
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            MakeStep();
+            StartCoroutine(MakeStep());
         }
     }
 
@@ -55,75 +56,121 @@ public class GridMovement : MonoBehaviour
     }
 
     //this will determine where to go next and start coroutine
-    void MakeStep()
+    IEnumerator MakeStep()
     {
-        if (!isHead)
+        if (isHead)
         {
-            MakeStepAndTellNext(goingForward);
-        }
-        else
-        {
-            Vector3 currentPosition = transform.position;
-            int step;
-            if (goingRight)
-                step = 1;
-            else
-                step = -1;
-            int x = (int)currentPosition.x + step;
-            int y = (int)currentPosition.y;
-            bool isForward = gameController.GetComponent<MushroomController>().IsStepAvailable(x, y);
-            MakeStepAndTellNext(isForward);
+
+            while (true)
+            {
+                //if (isHead)
+                //{
+                //    yield return StartCoroutine(MakeStepAndTellNext(goingForward));
+                //}
+                //else
+                //{
+                    Vector3 currentPosition = transform.position;
+                    int step;
+                    if (goingRight)
+                        step = 1;
+                    else
+                        step = -1;
+                    int x = (int)currentPosition.x + step;
+                    int y = (int)currentPosition.y;
+                    bool isForward = gameController.GetComponent<MushroomController>().IsStepAvailable(x, y);
+                    goingForward = isForward;
+                print(goingForward);
+                    yield return StartCoroutine(MakeStepAndTellNext(isForward));
+                //}
+            }
         }
     }
 
-    void MakeStepAndTellNext(bool isForward)
+    IEnumerator MakeStepAndTellNext(bool isForward)
     {
+        if (nextSegment != null)
+        {
+            StartCoroutine(nextSegment.GetComponent<GridMovement>().MakeStepAndTellNext(nextSegment.GetComponent<GridMovement>().goingForward));
+        }
         if (isForward)
         {
-            StartCoroutine(GoForward());
+            yield return StartCoroutine(GoForward());
         }
         else
         {
-            StartCoroutine(GoDown());
-        }
-        if (nextSegment != null)
-        {
-            nextSegment.GetComponent<GridMovement>().goingForward = isForward;
+            yield return StartCoroutine(GoDown());
         }
     }
 
     //use this if nothing blocking way
     IEnumerator GoForward()
     {
-        Vector3 currentPosition = transform.position;
-        int step;
-        if (goingRight)
-            step = 1;
-        else
-            step = -1;
-        int x = (int)currentPosition.x + step;
-        int y = (int)currentPosition.y;
-        transform.position = new Vector3(x, y, 0);
-        yield return null;
+        //Vector3 currentPosition = transform.position;
+        //int step;
+        //if (goingRight)
+        //    step = 1;
+        //else
+        //    step = -1;
+        //int x = (int)currentPosition.x + step;
+        //int y = (int)currentPosition.y;
+        //transform.position = new Vector3(x, y, 0);
+        //yield return null;
+        Vector3 curPos = transform.position;
+        double step = 0.1;
+        if (!goingRight)
+            step = -step;
+        for (int i = 0; i < 10; i++)
+        {
+            double x = curPos.x + (i + 1) * step;
+            float y = curPos.y;
+            transform.position = new Vector3((float)x, y, 0);
+            yield return null;
+        }
+        if (!isHead)
+        {
+            goingForward = previousSegment.GetComponent<GridMovement>().goingForward;
+        }
     }
 
     //use this if something in the way or centipede splitted
     IEnumerator GoDown()
     {
-        float rotation = 0.5f;
-        if (!goingRight)
+        //float rotation = 0.5f;
+        //if (!goingRight)
+        //{
+        //    rotation = -rotation;
+        //}
+        //float currentZRotation = transform.rotation.z;
+        //transform.rotation = new Quaternion(0, 0, currentZRotation + rotation, 0);
+        //Vector3 currentPosition = transform.position;
+        //int x = (int)currentPosition.x;
+        //int y = (int)currentPosition.y - 1;
+        //transform.position = new Vector3(x, y, 0);
+        //transform.rotation = new Quaternion(0, 0, currentZRotation + 2 * rotation, 0);
+        //goingRight = !goingRight;
+        //yield return null;
+        Vector3 curPos = transform.position;
+        double step = 0.1;
+        double rotationStep = 180 * step;  //because cell is 1, number of steps is 1/step and rotation step is 180/numOfSteps=180*step :)
+        double currentRot = -180;
+        if (goingRight)
         {
-            rotation = -rotation;
+            rotationStep = -rotationStep;
+            currentRot = 0;
         }
-        float currentZRotation = transform.rotation.z;
-        transform.rotation = new Quaternion(0, 0, currentZRotation + rotation, 0);
-        Vector3 currentPosition = transform.position;
-        int x = (int)currentPosition.x;
-        int y = (int)currentPosition.y - 1;
-        transform.position = new Vector3(x, y, 0);
-        transform.rotation = new Quaternion(0, 0, currentZRotation + 2 * rotation, 0);
         goingRight = !goingRight;
-        yield return null;
+        for (int i = 0; i < 10; i++)
+        {
+            float x = curPos.x;
+            double y = curPos.y - (i + 1) * step;
+            transform.position = new Vector3(x, (float)y, 0);
+            transform.rotation = Quaternion.Euler(0, 0, (float)(currentRot + (i + 1) * rotationStep));
+            yield return null;
+        }
+        if (!isHead)
+        {
+            goingForward = previousSegment.GetComponent<GridMovement>().goingForward;
+        }
     }
 
     void BecomeHead()

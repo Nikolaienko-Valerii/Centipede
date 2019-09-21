@@ -2,11 +2,23 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MushroomController : MonoBehaviour
+public class GameControllerScript : MonoBehaviour
 {
     bool[,] MushroomsGrid;
     int gridHeight, gridWidth;
-    public GameObject MushroomPrefab; 
+    public GameObject MushroomPrefab;
+
+    public int Lifes = 3;
+    public int Score = 0;
+    public int MushroomScore = 3;
+    public int CentipedeScore = 10;
+
+    public int CurrentCentipedeLength = 12;
+    public int AliveParts = 12;
+    public bool ExtraHead = false;
+
+
+
     void Start()
     {
         gridHeight = (int)(2 * Camera.main.orthographicSize);
