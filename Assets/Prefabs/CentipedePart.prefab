@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 3027869594131119789}
   - component: {fileID: 984043251097246376}
   - component: {fileID: 3190982918521519365}
+  - component: {fileID: 5738577601598121335}
   m_Layer: 0
   m_Name: CentipedePart
   m_TagString: Untagged
@@ -110,7 +111,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3027869594131119790}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8ebbe78b1483bf44e897009701dfe91a, type: 3}
   m_Name: 
@@ -125,7 +126,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3027869594131119790}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 402ee5fee19f8994ea4b725f3c594485, type: 3}
   m_Name: 
@@ -181,3 +182,15 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
+--- !u!114 &5738577601598121335
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3027869594131119790}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 921c42c2c1159d2428f2c84411bcf82e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
