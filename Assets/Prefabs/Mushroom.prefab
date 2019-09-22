@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 6901272764019172436}
   - component: {fileID: 5460553689929753292}
   - component: {fileID: 510849529906765041}
+  - component: {fileID: 3735981822280490841}
   m_Layer: 0
   m_Name: Mushroom
   m_TagString: Untagged
@@ -123,3 +124,24 @@ MonoBehaviour:
   - {fileID: 21300016, guid: 89af35fed1ac860468864deb32431eab, type: 3}
   - {fileID: 21300010, guid: 89af35fed1ac860468864deb32431eab, type: 3}
   - {fileID: 21300004, guid: 89af35fed1ac860468864deb32431eab, type: 3}
+--- !u!50 &3735981822280490841
+Rigidbody2D:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3104872078367612075}
+  m_BodyType: 2
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 1
+  m_LinearDrag: 0
+  m_AngularDrag: 0.05
+  m_GravityScale: 1
+  m_Material: {fileID: 0}
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 0
