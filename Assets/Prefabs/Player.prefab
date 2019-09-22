@@ -142,7 +142,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ecd2b0adfb8b8b141bf7eb4baa53db2c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  PlayerSpeed: 50
+  PlayerSpeed: 0.5
   MovementFieldHeight: 4
   PlayerSize: 1
 --- !u!82 &5113207810586979246
@@ -286,5 +286,5 @@ Rigidbody2D:
   m_Material: {fileID: 0}
   m_Interpolate: 0
   m_SleepingMode: 1
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
   m_Constraints: 4

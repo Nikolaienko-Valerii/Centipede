@@ -23,17 +23,16 @@ public class PlayerMovement : MonoBehaviour
     {
         // moving player with axis (gamepad, arrows etc.)
         Vector3 position = transform.position;
-        //position.y += Input.GetAxis("Vertical") * PlayerSpeed;
-        //position.x += Input.GetAxis("Horizontal") * PlayerSpeed;
-        gameObject.GetComponent<Rigidbody2D>().AddForce(new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical")) * PlayerSpeed);
+        position.y += Input.GetAxis("Vertical") * PlayerSpeed;
+        position.x += Input.GetAxis("Horizontal") * PlayerSpeed;
 
         // checking that player stays in desired area
         position.y = Mathf.Clamp(position.y, maxDown + PlayerSize / 2, maxDown + MovementFieldHeight - PlayerSize / 2);
 
         
         position.x = Mathf.Clamp(position.x, -0.5f + PlayerSize / 2, maxRight - PlayerSize / 2);
-        transform.position = position;
-
+        //transform.position = position;
+        gameObject.GetComponent<Rigidbody2D>().MovePosition(position);
 
     }
 }
