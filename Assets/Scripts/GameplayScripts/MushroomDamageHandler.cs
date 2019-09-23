@@ -17,6 +17,7 @@ public class MushroomDamageHandler : MonoBehaviour
     {
         if (collision.gameObject.name == "Bullet(Clone)")
         {
+            collision.gameObject.GetComponent<BulletDamageHandler>().isColliding = true;
             health--;
         }
     }
@@ -44,6 +45,6 @@ public class MushroomDamageHandler : MonoBehaviour
         Vector3 pos = transform.position;
         int x = (int)pos.x;
         int y = (int)pos.y;
-        GameController.GetComponent<GameControllerScript>().RemoveMushroom(x, y);
+        GameController.GetComponentInParent<GameControllerScript>().RemoveMushroom(x, y);
     }
 }

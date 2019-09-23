@@ -66,7 +66,7 @@ public class GameControllerScript : MonoBehaviour
         {
             LostLife();
         }
-        print(x +" "+ y + " " + -gridHeight);
+        //print(x +" "+ y + " " + -gridHeight);
         return !MushroomsGrid[x, -y];
     }
 
@@ -169,12 +169,6 @@ public class GameControllerScript : MonoBehaviour
     }
 
     void GameOver()
-    {
-        PlayerPrefs.SetInt("Score", Score);
-        SceneManager.LoadScene(2, LoadSceneMode.Single);
-    }
-
-    void GameComplete()
     {
         PlayerPrefs.SetInt("Score", Score);
         SceneManager.LoadScene(2, LoadSceneMode.Single);

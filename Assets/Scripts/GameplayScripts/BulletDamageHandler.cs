@@ -4,15 +4,15 @@ using UnityEngine;
 
 public class BulletDamageHandler : MonoBehaviour
 {
-    int health = 1;
+    public bool isColliding = false;
 
-    private void OnCollisionEnter2D(Collision2D collision)
-    {
-        health--;
-    }
+    //private void OnCollisionEnter2D(Collision2D collision)
+    //{
+    //    isColliding = true;
+    //}
     void Update()
     {
-        if (health <= 0)
+        if (isColliding)
         {
             Destroy(gameObject);
         }
