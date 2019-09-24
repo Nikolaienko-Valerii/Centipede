@@ -103,21 +103,21 @@ public class GameControllerScript : MonoBehaviour
         for (int i = 0; i < currentCentipedeLength; i++)
         {
             centipedeParts[i] = Instantiate(CentipedePrefab, new Vector3(baseX + i * step, 0, 0), rotation);
-            centipedeParts[i].GetComponent<GridMovement>().goingRight = goingRight;
+            centipedeParts[i].GetComponent<SectionController>().goingRight = goingRight;
             if (i != 0)
             {
-                centipedeParts[i].GetComponent<GridMovement>().previousSegment = centipedeParts[i - 1];
-                centipedeParts[i - 1].GetComponent<GridMovement>().nextSegment = centipedeParts[i];
+                centipedeParts[i].GetComponent<SectionController>().previousSegment = centipedeParts[i - 1];
+                centipedeParts[i - 1].GetComponent<SectionController>().nextSegment = centipedeParts[i];
             }
             else
-                centipedeParts[i].GetComponent<GridMovement>().isHead = true;
+                centipedeParts[i].GetComponent<SectionController>().isHead = true;
         }
         //creating "heads"
         int pointer = currentCentipedeLength;
         for (int j = 0; j < headsCount; j++)
         {
             centipedeParts[pointer + j] = Instantiate(CentipedePrefab, new Vector3(baseX + (pointer + j) * step, 0, 0), rotation);
-            centipedeParts[pointer + j].GetComponent<GridMovement>().isHead = true;
+            centipedeParts[pointer + j].GetComponent<SectionController>().isHead = true;
         }
     }
 

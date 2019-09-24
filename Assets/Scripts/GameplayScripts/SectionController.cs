@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GridMovement : MonoBehaviour
+public class SectionController : MonoBehaviour
 {
     public bool isHead = false;
     public bool goingRight = true;
@@ -10,6 +10,8 @@ public class GridMovement : MonoBehaviour
     public GameObject nextSegment;
     public bool goingForward = true;
     public int health = 1;
+    public RuntimeAnimatorController HeadAnimation;
+    public RuntimeAnimatorController TaleAnimation;
     GameObject gameController;
     Animator animator;
     public float delay = 0.3f;
@@ -36,11 +38,11 @@ public class GridMovement : MonoBehaviour
     {
         if (!isHead)
         {
-            animator.runtimeAnimatorController = Resources.Load("Tale01") as RuntimeAnimatorController;
+            animator.runtimeAnimatorController = TaleAnimation;
         }
         else
         {
-            animator.runtimeAnimatorController = Resources.Load("Head01") as RuntimeAnimatorController;
+            animator.runtimeAnimatorController = HeadAnimation;
         }
     }
 
@@ -50,7 +52,7 @@ public class GridMovement : MonoBehaviour
     {
         if (nextSegment != null)
         {
-            nextSegment.GetComponent<GridMovement>().BecomeHead();
+            nextSegment.GetComponent<SectionController>().BecomeHead();
         }
         Destroy(gameObject);
     }
@@ -100,15 +102,15 @@ public class GridMovement : MonoBehaviour
     {
         segmentNum++;
         print(segmentNum);
-        StartCoroutine(next.GetComponent<GridMovement>().MakeStep(next.GetComponent<GridMovement>().goingForward));
-        if (next.GetComponent<GridMovement>().nextSegment != null)
+        StartCoroutine(next.GetComponent<SectionController>().MakeStep(next.GetComponent<SectionController>().goingForward));
+        if (next.GetComponent<SectionController>().nextSegment != null)
         {
-            bool myForward = next.GetComponent<GridMovement>().goingForward;
-            bool myRight = next.GetComponent<GridMovement>().goingRight;
-            next.GetComponent<GridMovement>().TellNextStep(next.GetComponent<GridMovement>().nextSegment, myForward, myRight, segmentNum);
+            bool myForward = next.GetComponent<SectionController>().goingForward;
+            bool myRight = next.GetComponent<SectionController>().goingRight;
+            next.GetComponent<SectionController>().TellNextStep(next.GetComponent<SectionController>().nextSegment, myForward, myRight, segmentNum);
         }
-        next.GetComponent<GridMovement>().goingForward = forward;
-        next.GetComponent<GridMovement>().goingRight = right;
+        next.GetComponent<SectionController>().goingForward = forward;
+        next.GetComponent<SectionController>().goingRight = right;
     } 
 
 

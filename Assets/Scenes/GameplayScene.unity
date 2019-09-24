@@ -348,8 +348,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1233183518}
-  - component: {fileID: 1233183517}
-  - component: {fileID: 1233183516}
   - component: {fileID: 1233183519}
   m_Layer: 0
   m_Name: GameController
@@ -358,33 +356,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1233183516
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1233183515}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d28f5b23673014a419ac288fa550cd0b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  CentipedePrefab: {fileID: 479676762, guid: 59ce078bc053f4640ada833dd9bf5e8c, type: 3}
-  TalePrefab: {fileID: 3027869594131119790, guid: 33f38dd1c4f6a4649841ddc4651c8831,
-    type: 3}
---- !u!114 &1233183517
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1233183515}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a8f6331b90b2ba740941796b90077743, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!4 &1233183518
 Transform:
   m_ObjectHideFlags: 0
@@ -417,7 +388,8 @@ MonoBehaviour:
     type: 3}
   CentipedePrefab: {fileID: 3027869594131119790, guid: 33f38dd1c4f6a4649841ddc4651c8831,
     type: 3}
-  HealthImagePrefab: {fileID: 0}
+  HealthImagePrefab: {fileID: 5063865065262523234, guid: 1a016e89eaeeba44bb76f04873dad4de,
+    type: 3}
   Lifes: 3
   Score: 0
   MushroomScore: 3

@@ -167,4 +167,6 @@ MonoBehaviour:
   nextSegment: {fileID: 0}
   goingForward: 1
   health: 1
-  delay: 0.3
+  HeadAnimation: {fileID: 9100000, guid: 55648d08b4f7e2743b557017a18d7d50, type: 2}
+  TaleAnimation: {fileID: 9100000, guid: bfc15a8452110f942a1d247eb6acd9f9, type: 2}
+  delay: 0.1
