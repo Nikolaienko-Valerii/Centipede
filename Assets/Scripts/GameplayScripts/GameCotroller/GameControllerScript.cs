@@ -21,18 +21,37 @@ public class GameControllerScript : MonoBehaviour
     int currentCentipedeLength;
     int headsCount;
 
+    private CentipedeSpawner centipedeSpawner;
+    private MushroomSpawner mushroomSpawner;
+    private LevelsController levelsController;
+    private PointsHandler pointsController;
+
 
 
     void Start()
     {
+        InitializeControllers();
+        InitializeGame();
+        MushroomsGrid = mushroomSpawner.GenerateMushroomField(gridWidth, gridHeight);
+        StartGame();
+    }
+
+    void InitializeControllers()
+    {
+        centipedeSpawner = GetComponent<CentipedeSpawner>();
+        mushroomSpawner = GetComponent<MushroomSpawner>();
+        levelsController = GetComponent<LevelsController>();
+        pointsController = GetComponent<PointsHandler>();
+    }
+
+    void InitializeGame()
+    {
         gridHeight = (int)(2 * Camera.main.orthographicSize);
         gridWidth = gridHeight * 4 / 3; //pretty hardcoded but our ratio is always 4:3? so who cares :)
         gridHeight--; //because first line is for scores etc.
+
         currentCentipedeLength = InitialCentipedeLength;
         headsCount = InitialCentipedeLength - currentCentipedeLength;
-        MushroomsGrid = new bool[gridWidth, gridHeight];
-        GenerateMushrooms();
-        StartGame();
     }
 
     void GenerateMushrooms()
