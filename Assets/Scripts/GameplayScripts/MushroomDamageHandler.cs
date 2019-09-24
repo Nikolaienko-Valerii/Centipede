@@ -15,7 +15,7 @@ public class MushroomDamageHandler : MonoBehaviour
     }
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.gameObject.name == "Bullet(Clone)")
+        if (collision.gameObject.tag == "Bullet")
         {
             collision.gameObject.GetComponent<BulletDamageHandler>().isColliding = true;
             health--;

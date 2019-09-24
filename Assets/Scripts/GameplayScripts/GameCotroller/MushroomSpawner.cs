@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class MushroomSpawner : MonoBehaviour
 {
-    int MushroomProbability = 10;
+    int MushroomProbability = 6;
     public GameObject MushroomPrefab;
 
     public bool[,] GenerateMushroomField(int width, int height)

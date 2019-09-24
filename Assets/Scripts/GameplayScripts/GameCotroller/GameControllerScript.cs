@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class GameControllerScript : MonoBehaviour
 {
@@ -10,9 +11,15 @@ public class GameControllerScript : MonoBehaviour
     public GameObject MushroomPrefab;
     public GameObject PlayerPrefab;
     public GameObject CentipedePrefab;
-    public GameObject HealthImagePrefab;
+
+    public Canvas canvas;
+    public Image HealthImage;
+
+    public Text ScoreText;
 
     public int Lifes = 3;
+    public int MaxLifes = 5;
+
     public int Score = 0;
     public int MushroomScore = 3;
     public int CentipedeScore = 10;
@@ -26,12 +33,19 @@ public class GameControllerScript : MonoBehaviour
     private LevelsController levelsController;
     private PointsHandler pointsController;
 
+    private GameObject[] centipedes;
+    private GameObject player;
+
+    private bool levelLost = false;
+
+    private Image[] healthBar;
 
 
     void Start()
     {
         InitializeControllers();
         InitializeGame();
+        DisplayHealth();
         MushroomsGrid = mushroomSpawner.GenerateMushroomField(gridWidth, gridHeight);
         StartGame();
     }
@@ -52,15 +66,26 @@ public class GameControllerScript : MonoBehaviour
 
         currentCentipedeLength = InitialCentipedeLength;
         headsCount = InitialCentipedeLength - currentCentipedeLength;
+
+        centipedes = new GameObject[InitialCentipedeLength];
     }
 
-    void GenerateMushrooms()
+    void DisplayHealth()
     {
-        AddMushroom(5,-7);
-        AddMushroom(5,-8);
-        AddMushroom(4,-8);
-        AddMushroom(0,-8);
-        AddMushroom(3,-9);
+        healthBar = new Image[MaxLifes];
+        Vector3 imageStep = new Vector3(HealthImage.rectTransform.rect.width + 1, 0);
+        Vector3 basePosition = ScoreText.rectTransform.position + new Vector3(ScoreText.rectTransform.rect.width, 0);
+        Vector3 ImageCenter = new Vector3(HealthImage.rectTransform.rect.width / 2, -HealthImage.rectTransform.rect.width / 2);
+        basePosition += ImageCenter;
+        for (int i = 0; i < MaxLifes; i++)
+        {
+            healthBar[i] = Instantiate(HealthImage, basePosition + i * imageStep, new Quaternion(), canvas.transform);
+            healthBar[i].enabled = false;
+        }
+        for (int j = 0; j < Lifes-1; j++)
+        {
+            healthBar[j].enabled = true;
+        }
     }
 
     public void RemoveMushroom(int x, int y)
@@ -77,21 +102,16 @@ public class GameControllerScript : MonoBehaviour
 
     public bool IsStepAvailable(int x, int y)
     {
+        if (y <= -gridHeight)
+        {
+            LostLife();
+            return false;
+        }
         if (x < 0 || x > gridWidth - 1)
         {
             return false;
         }
-        if (y <= -gridHeight)
-        {
-            LostLife();
-        }
-        //print(x +" "+ y + " " + -gridHeight);
         return !MushroomsGrid[x, -y];
-    }
-
-    void Update()
-    {
-        
     }
 
     void AddPoints()
@@ -102,7 +122,6 @@ public class GameControllerScript : MonoBehaviour
     void SpawnCentipede(bool goingRight)  //TODO spawn "heads" correctly, also randomize spawn positions/times
     {
         int baseX;
-        GameObject[] centipedeParts = new GameObject[InitialCentipedeLength];
         Quaternion rotation;
         int step;
         if (goingRight)
@@ -121,22 +140,22 @@ public class GameControllerScript : MonoBehaviour
         //creating "big" centipede
         for (int i = 0; i < currentCentipedeLength; i++)
         {
-            centipedeParts[i] = Instantiate(CentipedePrefab, new Vector3(baseX + i * step, 0, 0), rotation);
-            centipedeParts[i].GetComponent<SectionController>().goingRight = goingRight;
+            centipedes[i] = Instantiate(CentipedePrefab, new Vector3(baseX + i * step, 0, 0), rotation);
+            centipedes[i].GetComponent<SectionController>().goingRight = goingRight;
             if (i != 0)
             {
-                centipedeParts[i].GetComponent<SectionController>().previousSegment = centipedeParts[i - 1];
-                centipedeParts[i - 1].GetComponent<SectionController>().nextSegment = centipedeParts[i];
+                centipedes[i].GetComponent<SectionController>().previousSegment = centipedes[i - 1];
+                centipedes[i - 1].GetComponent<SectionController>().nextSegment = centipedes[i];
             }
             else
-                centipedeParts[i].GetComponent<SectionController>().isHead = true;
+                centipedes[i].GetComponent<SectionController>().isHead = true;
         }
         //creating "heads"
         int pointer = currentCentipedeLength;
         for (int j = 0; j < headsCount; j++)
         {
-            centipedeParts[pointer + j] = Instantiate(CentipedePrefab, new Vector3(baseX + (pointer + j) * step, 0, 0), rotation);
-            centipedeParts[pointer + j].GetComponent<SectionController>().isHead = true;
+            centipedes[pointer + j] = Instantiate(CentipedePrefab, new Vector3(baseX + (pointer + j) * step, 0, 0), rotation);
+            centipedes[pointer + j].GetComponent<SectionController>().isHead = true;
         }
     }
 
@@ -156,35 +175,51 @@ public class GameControllerScript : MonoBehaviour
         SpawnCentipede(true);
     }
 
-    void LostLife()
+    public void LostLife()
     {
-        Lifes--;
-        print(Lifes);
-        if (Lifes == 0)
+        if (!levelLost)
         {
-            GameOver();
-        }
-        else
-        {
-            RestartLevel();
+            levelLost = true;
+            Lifes--;
+            if (Lifes == 0)
+            {
+                GameOver();
+            }
+            else
+            {
+
+                healthBar[Lifes-1].enabled = false;
+                RestartLevel();
+            }
         }
     }
 
     void RestartLevel()
     {
+        levelLost = false;
         DestroyAllCentipedes();
+        DestroyPlayer();
         SpawnPlayer();
         SpawnCentipede(true);
     }
 
     void DestroyAllCentipedes()
     {
-        //Destroy centipedes here without adding points and spawning mushrooms
+        foreach (var part in centipedes)
+        {
+            Destroy(part);
+        }
+    }
+
+    void DestroyPlayer()
+    {
+        Destroy(player);
     }
 
     void SpawnPlayer()
     {
-        Instantiate(PlayerPrefab, new Vector3(11.5f, -17, 0), new Quaternion()); //TODO calculate position
+        player = Instantiate(PlayerPrefab, new Vector3(11.5f, -17, 0), new Quaternion()); //TODO calculate position
+        player.tag = "Player";
     }
 
     void GameOver()

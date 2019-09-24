@@ -169,12 +169,19 @@ public class SectionController : MonoBehaviour
     }
 
     #region Collisions
-    private void OnCollisionEnter2D(Collision2D collision)
+    private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.gameObject.name == "Bullet(Clone)" && !collision.gameObject.GetComponent<BulletDamageHandler>().isColliding) //use tag instead
+        if (collision.gameObject.tag == "Bullet" && !collision.gameObject.GetComponent<BulletDamageHandler>().isColliding) //use tag instead
         {
             collision.gameObject.GetComponent<BulletDamageHandler>().isColliding = true;
             health--;
+        }
+        else
+        {
+            if (collision.gameObject.tag == "Player")
+            {
+                gameController.GetComponent<GameControllerScript>().LostLife();
+            }
         }
     }
 

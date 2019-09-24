@@ -14,7 +14,7 @@ public class PlayerShooting : MonoBehaviour
 
         if (Input.GetButton("Fire1") & timer <= 0)
         {
-            Instantiate(Bullet, ShootingPoint.transform.position, ShootingPoint.transform.rotation);
+            Instantiate(Bullet, ShootingPoint.transform.position, ShootingPoint.transform.rotation).tag = "Bullet";
             timer = Delay;
             gameObject.GetComponent<AudioSource>().Play();
         }

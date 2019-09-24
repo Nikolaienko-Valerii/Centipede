@@ -7,11 +7,10 @@ public class ScoreHandler : MonoBehaviour
 {
     public Text ScoreText;
     public Text ResultText;
-    string scoreTextBase = "your score: ";
     void Start()
     {
         int score = PlayerPrefs.GetInt("Score");
-        ScoreText.text = scoreTextBase + score.ToString("D6");
+        ScoreText.text = score.ToString("D6");
     }
     void Update()
     {

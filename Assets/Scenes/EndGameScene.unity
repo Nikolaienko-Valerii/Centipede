@@ -915,7 +915,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aaedf743f62d2644a904d0d540cb32f8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ScoreText: {fileID: 701386418}
+  ScoreText: {fileID: 1844276656}
   ResultText: {fileID: 862998996}
 --- !u!4 &1273856674
 Transform:
