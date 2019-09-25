@@ -62,6 +62,7 @@ public class SectionController : MonoBehaviour
     //this will determine where to go next and start coroutine
     IEnumerator MoveCentipede()
     {
+        yield return new WaitForSeconds(delay);
         while (true)
         {
             bool isForward = false;
@@ -162,8 +163,8 @@ public class SectionController : MonoBehaviour
     void BecomeHead()
     {
         isHead = true;
-        goingForward = false; //TODO head ignores this
-        animator.runtimeAnimatorController = Resources.Load("Head01") as RuntimeAnimatorController;
+        goingForward = false; 
+        animator.runtimeAnimatorController = HeadAnimation;
         justBecameHead = true;
         StartCoroutine(walkingCoroutine);
     }
