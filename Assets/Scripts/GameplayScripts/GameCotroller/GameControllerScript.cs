@@ -12,6 +12,8 @@ public class GameControllerScript : MonoBehaviour
     public GameObject PlayerPrefab;
     public GameObject CentipedePrefab;
 
+    public int PlayerZoneHeight = 4;
+
     public Canvas canvas;
     public Image HealthImage;
 
@@ -46,7 +48,7 @@ public class GameControllerScript : MonoBehaviour
         InitializeControllers();
         InitializeGame();
         DisplayHealth();
-        MushroomsGrid = mushroomSpawner.GenerateMushroomField(gridWidth, gridHeight);
+        MushroomsGrid = mushroomSpawner.GenerateMushroomField(gridWidth, gridHeight, PlayerZoneHeight); 
         StartGame();
     }
 

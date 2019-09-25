@@ -7,12 +7,12 @@ public class MushroomSpawner : MonoBehaviour
     int MushroomProbability = 6;
     public GameObject MushroomPrefab;
 
-    public bool[,] GenerateMushroomField(int width, int height)
+    public bool[,] GenerateMushroomField(int width, int height, int playerZoneHeight)
     {
         bool[,] field = new bool[width, height];
         for (int w = 0; w < width; w++)
         {
-            for (int h = 0; h < height; h++)
+            for (int h = 0; h < height - playerZoneHeight; h++)
             {
                 field[w, h] = hasMushroom(MushroomProbability);
                 if (field[w, h])

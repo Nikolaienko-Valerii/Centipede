@@ -6,13 +6,14 @@ public class PlayerMovement : MonoBehaviour
 {
 
     public float PlayerSpeed = 0.5f;
-    public float MovementFieldHeight = 4f;
+    float MovementFieldHeight = 4f;
     public float PlayerSize = 1f;
     float maxRight, maxDown; 
     
     void Start()
     {
         //calculation of bounds (our first cell center is (0,0) one line is for score and extra lives, so topleft point of camera is (-0.5,1.5)
+        MovementFieldHeight = GameObject.FindGameObjectWithTag("Controller").GetComponent<GameControllerScript>().PlayerZoneHeight;
         maxDown = 1.5f - 2 * Camera.main.orthographicSize; 
         float screenRatio = (float)Screen.width / Screen.height;  
         float screenWidth = 2 * Camera.main.orthographicSize * screenRatio;
