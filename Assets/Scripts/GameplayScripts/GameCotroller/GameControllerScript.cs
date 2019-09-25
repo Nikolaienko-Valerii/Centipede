@@ -157,14 +157,28 @@ public class GameControllerScript : MonoBehaviour
         ScoreText.text = Score.ToString("D6");
     }
 
-    void SpawnCentipede(bool goingRight)  //TODO spawn "heads" correctly, also randomize spawn positions/times
+    #region CentipedeSpawning
+
+    void SpawnCentipedes()  
     {
         AliveParts = InitialCentipedeLength;
-        int headsCount = Mathf.Min(levelNumber - 1, InitialCentipedeLength);
-        int centipedeLength = InitialCentipedeLength - headsCount;
+        SpawnMainCentipede();
+        if (levelNumber > 1)
+        {
+            SpawnHeads();
+        }
+    }
+
+    //creating "big" centipede
+    void SpawnMainCentipede()
+    {
+        int centipedeLength = Mathf.Max(InitialCentipedeLength - levelNumber + 1, 0);
+        bool goingRight = ChooseDirection();
+
         int baseX;
         Quaternion rotation;
         int step;
+
         if (goingRight)
         {
             rotation = new Quaternion();
@@ -178,7 +192,6 @@ public class GameControllerScript : MonoBehaviour
             step = 1;
         }
 
-        //creating "big" centipede
         for (int i = 0; i < centipedeLength; i++)
         {
             centipedes[i] = Instantiate(CentipedePrefab, new Vector3(baseX + i * step, 0, 0), rotation);
@@ -191,25 +204,66 @@ public class GameControllerScript : MonoBehaviour
             else
                 centipedes[i].GetComponent<SectionController>().isHead = true;
         }
-        //creating "heads"
-        int pointer = centipedeLength;
+    }
+
+    //creating "heads"
+    void SpawnHeads()
+    {
+        int headsCount = Mathf.Min(levelNumber - 1, InitialCentipedeLength);
+        int pointer = Mathf.Max(InitialCentipedeLength - levelNumber + 1, 0);
+
         for (int j = 0; j < headsCount; j++)
         {
-            centipedes[pointer + j] = Instantiate(CentipedePrefab, new Vector3(baseX + (pointer + j) * step, 0, 0), rotation);
+            bool goingRight = ChooseDirection();
+
+            int baseX;
+            int baseY = -Random.Range(0, 4);  // this will randomize "heads" spawning more
+            Quaternion rotation;
+            int step;
+
+            if (goingRight)
+            {
+                rotation = new Quaternion();
+                baseX = -1;
+                step = -1;
+            }
+            else
+            {
+                rotation = new Quaternion(0, 0, -1, 0);
+                baseX = gridWidth;
+                step = 1;
+            }
+
+            centipedes[pointer + j] = Instantiate(CentipedePrefab, new Vector3(baseX + j * step, baseY, 0), rotation);
+            centipedes[pointer + j].GetComponent<SectionController>().goingRight = goingRight;
             centipedes[pointer + j].GetComponent<SectionController>().isHead = true;
+            centipedes[pointer + j].GetComponent<SectionController>().delay /= 2;
         }
     }
+
+    bool ChooseDirection()
+    {
+        if (Random.Range(0, 2) == 0)
+        {
+            return false;
+        }
+        return true;
+    }
+
+    #endregion
+
+    #region GameControls
 
     void StartGame()
     {
         SpawnPlayer();
-        SpawnCentipede(false);
+        SpawnCentipedes();
     }
 
     void NewLevel()
     {
         levelNumber++;
-        SpawnCentipede(true);
+        SpawnCentipedes();
     }
 
     public void LostLife()
@@ -237,9 +291,18 @@ public class GameControllerScript : MonoBehaviour
         DestroyAllCentipedes();
         DestroyPlayer();
         SpawnPlayer();
-        SpawnCentipede(true);
+        SpawnCentipedes();
     }
 
+    void GameOver()
+    {
+        PlayerPrefs.SetInt("Score", Score);
+        SceneManager.LoadScene(2, LoadSceneMode.Single);
+    }
+
+    #endregion
+
+    #region SmallGameControls
     void DestroyAllCentipedes()
     {
         foreach (var part in centipedes)
@@ -262,10 +325,5 @@ public class GameControllerScript : MonoBehaviour
         player = Instantiate(PlayerPrefab, new Vector3(xPos, yPos, 0), new Quaternion()); //TODO calculate position
         player.tag = "Player";
     }
-
-    void GameOver()
-    {
-        PlayerPrefs.SetInt("Score", Score);
-        SceneManager.LoadScene(2, LoadSceneMode.Single);
-    }
+    #endregion
 }
