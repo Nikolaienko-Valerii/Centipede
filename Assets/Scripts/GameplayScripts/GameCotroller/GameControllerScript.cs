@@ -46,11 +46,28 @@ public class GameControllerScript : MonoBehaviour
 
     void Start()
     {
+        CameraPositioning();
         InitializeControllers();
         InitializeGame();
         DisplayHealth();
         MushroomsGrid = mushroomSpawner.GenerateMushroomField(gridWidth, gridHeight, PlayerZoneHeight); 
         StartGame();
+    }
+
+    void CameraPositioning()
+    {
+        //grid cells are 1x1 size, top line is left for scores and lifes => top-left cell must be (0,1) => camera's top left angle (-0.5, 1.5);
+
+        //if cam top left was in (0;0)
+        float yPos = -Camera.main.orthographicSize;
+
+        float ratio = (float)Screen.width / Screen.height; //to calculate cam halfwidth 
+        float xPos = Camera.main.orthographicSize * ratio;
+
+        
+        Vector3 cameraPosition = new Vector3(xPos, yPos, -10); //-10 is default camera Z position
+        cameraPosition += new Vector3(-0.5f, 1.5f, 0);
+        Camera.main.transform.position = cameraPosition;
     }
 
     void InitializeControllers()
@@ -96,6 +113,7 @@ public class GameControllerScript : MonoBehaviour
 
     public void AddMushroom(int x, int y)
     {
+        print(x + " " + y);
         MushroomsGrid[x, -y] = true;
         Instantiate(MushroomPrefab, new Vector3(x, y, 0), new Quaternion());
     }
@@ -112,6 +130,15 @@ public class GameControllerScript : MonoBehaviour
             return false;
         }
         return !MushroomsGrid[x, -y];
+    }
+
+    public bool IsOnField(int x, int y)
+    {
+        if (x < 0 || x > gridWidth - 1)
+        {
+            return false;
+        }
+        return true;
     }
 
     public void CentipedePartDestroyed()
@@ -228,7 +255,11 @@ public class GameControllerScript : MonoBehaviour
 
     void SpawnPlayer()
     {
-        player = Instantiate(PlayerPrefab, new Vector3(11.5f, -17, 0), new Quaternion()); //TODO calculate position
+        //Placing player on the bottom midle => yPos = camera.y - camera.orthographicSize + half player width (is 0.5 because everything is 1x1)
+        float xPos = Camera.main.transform.position.x;
+        float yPos = Camera.main.transform.position.y - Camera.main.orthographicSize + 0.5f; 
+
+        player = Instantiate(PlayerPrefab, new Vector3(xPos, yPos, 0), new Quaternion()); //TODO calculate position
         player.tag = "Player";
     }
 

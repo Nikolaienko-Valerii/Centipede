@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class SectionController : MonoBehaviour
 {
+    public bool onField = false;
     public bool isHead = false;
     public bool goingRight = true;
     public GameObject previousSegment;
@@ -19,6 +20,7 @@ public class SectionController : MonoBehaviour
     bool justBecameHead = false;
     void Start()
     {
+
         gameController = GameObject.FindGameObjectWithTag("Controller");
         animator = gameObject.GetComponent<Animator>();
         ApplyAnimations();
@@ -27,10 +29,6 @@ public class SectionController : MonoBehaviour
         {
             StartCoroutine(walkingCoroutine);
         }
-    }
-    void Update()
-    {
-        
     }
 
     #region animations
@@ -65,7 +63,16 @@ public class SectionController : MonoBehaviour
                     step = -step;
                 int x = (int)currentPosition.x + step;
                 int y = (int)currentPosition.y;
-                isForward = gameController.GetComponent<GameControllerScript>().IsStepAvailable(x, y);
+                if (onField)
+                {
+                    isForward = gameController.GetComponent<GameControllerScript>().IsStepAvailable(x, y);
+                }
+                else
+                {
+                    isForward = true;
+                    onField = gameController.GetComponent<GameControllerScript>().IsOnField(x,y);
+                }
+                
             }
             else
             {
@@ -80,7 +87,7 @@ public class SectionController : MonoBehaviour
     {
         if (nextSegment != null)
         {
-            TellNextStep(nextSegment, isForward, goingRight, 0);
+            TellNextStep(nextSegment, isForward, goingRight, onField);
         }
         yield return StartCoroutine(MakeStep(isForward));
         if (!isForward)
@@ -90,19 +97,19 @@ public class SectionController : MonoBehaviour
         }
     }
 
-    public void TellNextStep(GameObject next, bool forward, bool right, int segmentNum)
+    public void TellNextStep(GameObject next, bool forward, bool right, bool isOnField)
     {
-        segmentNum++;
-        print(segmentNum);
         StartCoroutine(next.GetComponent<SectionController>().MakeStep(next.GetComponent<SectionController>().goingForward));
         if (next.GetComponent<SectionController>().nextSegment != null)
         {
             bool myForward = next.GetComponent<SectionController>().goingForward;
             bool myRight = next.GetComponent<SectionController>().goingRight;
-            next.GetComponent<SectionController>().TellNextStep(next.GetComponent<SectionController>().nextSegment, myForward, myRight, segmentNum);
+            bool myOnField = next.GetComponent<SectionController>().onField;
+            next.GetComponent<SectionController>().TellNextStep(next.GetComponent<SectionController>().nextSegment, myForward, myRight, myOnField);
         }
         next.GetComponent<SectionController>().goingForward = forward;
         next.GetComponent<SectionController>().goingRight = right;
+        next.GetComponent<SectionController>().onField = isOnField;
     } 
 
 
