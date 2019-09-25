@@ -5,12 +5,12 @@ using UnityEngine;
 public class MushroomDamageHandler : MonoBehaviour
 {
     public Sprite[] Sprites = new Sprite[3]; //to remove extra value from editor size of array is actually health
-    GameObject GameController;
+    GameObject gameController;
     int health;
 
     private void Start()
     {
-        GameController = GameObject.FindGameObjectWithTag("Controller");
+        gameController = GameObject.FindGameObjectWithTag("Controller");
         health = Sprites.Length;
     }
     private void OnCollisionEnter2D(Collision2D collision)
@@ -45,6 +45,6 @@ public class MushroomDamageHandler : MonoBehaviour
         Vector3 pos = transform.position;
         int x = (int)pos.x;
         int y = (int)pos.y;
-        GameController.GetComponentInParent<GameControllerScript>().RemoveMushroom(x, y);
+        gameController.GetComponentInParent<GameControllerScript>().RemoveMushroom(x, y);
     }
 }

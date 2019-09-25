@@ -91,7 +91,7 @@ public class GameControllerScript : MonoBehaviour
     public void RemoveMushroom(int x, int y)
     {
         MushroomsGrid[x, -y] = false;
-        print("Dead mushroom " + x + " " + -y);
+        AddPoints(MushroomScore);
     }
 
     public void AddMushroom(int x, int y)
@@ -114,9 +114,15 @@ public class GameControllerScript : MonoBehaviour
         return !MushroomsGrid[x, -y];
     }
 
-    void AddPoints()
+    public void CentipedePartDestroyed()
     {
-        //this must handle how much points to add and add them
+        AddPoints(CentipedeScore);
+    }
+
+    void AddPoints(int value)
+    {
+        Score = pointsController.AddPoints(value);
+        ScoreText.text = Score.ToString("D6");
     }
 
     void SpawnCentipede(bool goingRight)  //TODO spawn "heads" correctly, also randomize spawn positions/times

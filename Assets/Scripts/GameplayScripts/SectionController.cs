@@ -48,15 +48,6 @@ public class SectionController : MonoBehaviour
 
     #endregion
 
-    void Die()
-    {
-        if (nextSegment != null)
-        {
-            nextSegment.GetComponent<SectionController>().BecomeHead();
-        }
-        Destroy(gameObject);
-    }
-
 
     #region Movement
     //this will determine where to go next and start coroutine
@@ -159,6 +150,16 @@ public class SectionController : MonoBehaviour
     }
 
     #endregion
+
+    void Die()
+    {
+        if (nextSegment != null)
+        {
+            nextSegment.GetComponent<SectionController>().BecomeHead();
+        }
+        gameController.GetComponent<GameControllerScript>().CentipedePartDestroyed();
+        Destroy(gameObject);
+    }
 
     void BecomeHead()
     {
