@@ -11,9 +11,9 @@ public class PointsHandler : MonoBehaviour
         return currentPoints;
     }
 
-    public int AddPoints(int value)
+    public int AddPoints(int value, int level)
     {
-        currentPoints += value;
+        currentPoints += value * level;
         return currentPoints;
     }
 

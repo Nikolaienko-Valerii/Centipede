@@ -27,15 +27,16 @@ public class GameControllerScript : MonoBehaviour
     public int CentipedeScore = 10;
 
     public int InitialCentipedeLength = 12;
-    int currentCentipedeLength;
-    int headsCount;
+    int levelNumber = 1;
 
     private CentipedeSpawner centipedeSpawner;
     private MushroomSpawner mushroomSpawner;
     private LevelsController levelsController;
     private PointsHandler pointsController;
 
-    private GameObject[] centipedes;
+    private GameObject[] centipedes; //do I really need this?
+
+    private int AliveParts;
     private GameObject player;
 
     private bool levelLost = false;
@@ -65,9 +66,6 @@ public class GameControllerScript : MonoBehaviour
         gridHeight = (int)(2 * Camera.main.orthographicSize);
         gridWidth = gridHeight * 4 / 3; //pretty hardcoded but our ratio is always 4:3? so who cares :)
         gridHeight--; //because first line is for scores etc.
-
-        currentCentipedeLength = InitialCentipedeLength;
-        headsCount = InitialCentipedeLength - currentCentipedeLength;
 
         centipedes = new GameObject[InitialCentipedeLength];
     }
@@ -118,17 +116,25 @@ public class GameControllerScript : MonoBehaviour
 
     public void CentipedePartDestroyed()
     {
+        AliveParts--;
         AddPoints(CentipedeScore);
+        if (AliveParts <= 0)
+        {
+            NewLevel();
+        }
     }
 
     void AddPoints(int value)
     {
-        Score = pointsController.AddPoints(value);
+        Score = pointsController.AddPoints(value, levelNumber);
         ScoreText.text = Score.ToString("D6");
     }
 
     void SpawnCentipede(bool goingRight)  //TODO spawn "heads" correctly, also randomize spawn positions/times
     {
+        AliveParts = InitialCentipedeLength;
+        int headsCount = Mathf.Min(levelNumber - 1, InitialCentipedeLength);
+        int centipedeLength = InitialCentipedeLength - headsCount;
         int baseX;
         Quaternion rotation;
         int step;
@@ -146,7 +152,7 @@ public class GameControllerScript : MonoBehaviour
         }
 
         //creating "big" centipede
-        for (int i = 0; i < currentCentipedeLength; i++)
+        for (int i = 0; i < centipedeLength; i++)
         {
             centipedes[i] = Instantiate(CentipedePrefab, new Vector3(baseX + i * step, 0, 0), rotation);
             centipedes[i].GetComponent<SectionController>().goingRight = goingRight;
@@ -159,7 +165,7 @@ public class GameControllerScript : MonoBehaviour
                 centipedes[i].GetComponent<SectionController>().isHead = true;
         }
         //creating "heads"
-        int pointer = currentCentipedeLength;
+        int pointer = centipedeLength;
         for (int j = 0; j < headsCount; j++)
         {
             centipedes[pointer + j] = Instantiate(CentipedePrefab, new Vector3(baseX + (pointer + j) * step, 0, 0), rotation);
@@ -175,11 +181,7 @@ public class GameControllerScript : MonoBehaviour
 
     void NewLevel()
     {
-        if (currentCentipedeLength > 0)
-        {
-            currentCentipedeLength--;
-            headsCount++;
-        }
+        levelNumber++;
         SpawnCentipede(true);
     }
 
