@@ -48,8 +48,8 @@ public class SectionController : MonoBehaviour
 
 
     #region Movement
-    //this will determine where to go next and start coroutine
-    IEnumerator MoveCentipede()
+
+    IEnumerator MoveCentipede()  //moving all centipede parts to their next position
     {
         yield return new WaitForSeconds(delay);
         while (true)
@@ -83,7 +83,7 @@ public class SectionController : MonoBehaviour
         }
     }
 
-    IEnumerator MoveHeadTellTaleNextStep(bool isForward)
+    IEnumerator MoveHeadTellTaleNextStep(bool isForward) // all tale parts receiving next direction and moving after that
     {
         if (nextSegment != null)
         {
@@ -123,7 +123,7 @@ public class SectionController : MonoBehaviour
         {
             yield return StartCoroutine(GoDown());
         }
-        if (health == 0) //probably check after making a step
+        if (health == 0) //checking is part still alive or not
         {
             Die();
             int x = (int)transform.position.x;
@@ -132,6 +132,7 @@ public class SectionController : MonoBehaviour
         }
         yield return new WaitForSeconds(delay);
     }
+
     //use this if nothing blocking way
     IEnumerator GoForward()
     {

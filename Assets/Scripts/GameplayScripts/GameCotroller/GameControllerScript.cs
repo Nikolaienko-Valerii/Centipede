@@ -6,8 +6,6 @@ using UnityEngine.UI;
 
 public class GameControllerScript : MonoBehaviour
 {
-    bool[,] MushroomsGrid;
-    int gridHeight, gridWidth;
     public GameObject MushroomPrefab;
     public GameObject PlayerPrefab;
     public GameObject CentipedePrefab;
@@ -27,14 +25,18 @@ public class GameControllerScript : MonoBehaviour
     public int CentipedeScore = 10;
 
     public int InitialCentipedeLength = 12;
+
     int levelNumber = 1;
+
+    bool[,] MushroomsGrid;
+    int gridHeight, gridWidth;
 
     private CentipedeSpawner centipedeSpawner;
     private MushroomSpawner mushroomSpawner;
     private LevelsController levelsController;
     private PointsHandler pointsController;
 
-    private GameObject[] centipedes; //do I really need this?
+    private GameObject[] centipedes; 
 
     private int AliveParts;
     private GameObject player;
@@ -43,6 +45,56 @@ public class GameControllerScript : MonoBehaviour
 
     private Image[] healthBar;
 
+    public void RemoveMushroom(int x, int y) //removes mushroom from cell by position
+    {
+        MushroomsGrid[x, -y] = false;
+        AddPoints(MushroomScore);
+    }
+
+    public void AddMushroom(int x, int y) //adds mushroom to cell by position
+    {
+        MushroomsGrid[x, -y] = true;
+        Instantiate(MushroomPrefab, new Vector3(x, y, 0), new Quaternion());
+    }
+
+    public bool IsStepAvailable(int x, int y) //checks if centipedes can go this cell
+    {
+        if (y <= -gridHeight)
+        {
+            LostLife();
+            return false;
+        }
+        if (x < 0 || x > gridWidth - 1)
+        {
+            return false;
+        }
+        return !MushroomsGrid[x, -y];
+    }
+
+    public bool IsOnField(int x, int y) //checks is this cell on the field, used to move centipede forward until it reaches screen
+    {
+        if (x < 0 || x > gridWidth - 1)
+        {
+            return false;
+        }
+        return true;
+    }
+
+    public void CentipedePartDestroyed() //used to easily calculate when all parts are destroyed
+    {
+        AliveParts--;
+        AddPoints(CentipedeScore);
+        if (AliveParts <= 0)
+        {
+            NewLevel();
+        }
+    }
+
+    public void AddLife()  //adding life and displaying it
+    {
+        Lifes = Mathf.Min(Lifes + 1, MaxLifes);
+        healthBar[Lifes - 2].enabled = true; //-1 because displaying extra lifes, not all lifes and -1 more because of array starting from 0
+    }
 
     void Start()
     {
@@ -105,62 +157,10 @@ public class GameControllerScript : MonoBehaviour
         }
     }
 
-    public void RemoveMushroom(int x, int y)
-    {
-        MushroomsGrid[x, -y] = false;
-        AddPoints(MushroomScore);
-    }
-
-    public void AddMushroom(int x, int y)
-    {
-        print(x + " " + y);
-        MushroomsGrid[x, -y] = true;
-        Instantiate(MushroomPrefab, new Vector3(x, y, 0), new Quaternion());
-    }
-
-    public bool IsStepAvailable(int x, int y)
-    {
-        if (y <= -gridHeight)
-        {
-            LostLife();
-            return false;
-        }
-        if (x < 0 || x > gridWidth - 1)
-        {
-            return false;
-        }
-        return !MushroomsGrid[x, -y];
-    }
-
-    public bool IsOnField(int x, int y)
-    {
-        if (x < 0 || x > gridWidth - 1)
-        {
-            return false;
-        }
-        return true;
-    }
-
-    public void CentipedePartDestroyed()
-    {
-        AliveParts--;
-        AddPoints(CentipedeScore);
-        if (AliveParts <= 0)
-        {
-            NewLevel();
-        }
-    }
-
     void AddPoints(int value)
     {
         Score = pointsController.AddPoints(value, levelNumber);
         ScoreText.text = Score.ToString("D6");
-    }
-
-    public void AddLife()
-    {
-        Lifes = Mathf.Min(Lifes + 1, MaxLifes);
-        healthBar[Lifes - 2].enabled = true; //-1 because displaying extra lifes, not all lifes and -1 more because of array starting from 0
     }
 
     #region Spawning Centipede
@@ -302,7 +302,7 @@ public class GameControllerScript : MonoBehaviour
         SpawnCentipedes();
     }
 
-    void GameOver()
+    void GameOver()  // saving score and loading end-game scene
     {
         PlayerPrefs.SetInt("Score", Score);
         SceneManager.LoadScene(2, LoadSceneMode.Single);
