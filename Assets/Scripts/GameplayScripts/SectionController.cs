@@ -184,6 +184,8 @@ public class SectionController : MonoBehaviour
         {
             collision.gameObject.GetComponent<BulletDamageHandler>().isColliding = true;
             health--;
+
+            gameObject.GetComponent<AudioSource>().Play();
         }
         else
         {

@@ -167,6 +167,7 @@ public class GameControllerScript : MonoBehaviour
 
     void SpawnCentipedes()  
     {
+        gameObject.GetComponent<AudioSource>().Play();
         AliveParts = InitialCentipedeLength;
         SpawnMainCentipede();
         if (levelNumber > 1)
@@ -312,6 +313,7 @@ public class GameControllerScript : MonoBehaviour
     #region Destroying Objects and Spawning Player
     void DestroyAllCentipedes()
     {
+        gameObject.GetComponent<AudioSource>().Stop();
         foreach (var part in centipedes)
         {
             Destroy(part);
