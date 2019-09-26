@@ -5,8 +5,13 @@ using UnityEngine;
 public class MushroomDamageHandler : MonoBehaviour
 {
     public Sprite[] Sprites = new Sprite[3]; //to remove extra value from editor size of array is actually health
+    public GameObject BonusPrefab;
+    public int bonusChance = 100;
+
     GameObject gameController;
+    
     int health;
+    
 
     private void Start()
     {
@@ -41,10 +46,24 @@ public class MushroomDamageHandler : MonoBehaviour
 
     void Die()
     {
+        if (IsBonusDropped())
+        {
+            Instantiate(BonusPrefab, transform.position, new Quaternion());
+        }
         Destroy(gameObject);
         Vector3 pos = transform.position;
         int x = (int)pos.x;
         int y = (int)pos.y;
         gameController.GetComponentInParent<GameControllerScript>().RemoveMushroom(x, y);
+    }
+
+    bool IsBonusDropped()
+    {
+        int value = Random.Range(0, 100);
+        if (value<bonusChance)
+        {
+            return true;
+        }
+        return false;
     }
 }

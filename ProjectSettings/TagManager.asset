@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Controller
   - Bullet
+  - Bonus
   layers:
   - Default
   - TransparentFX

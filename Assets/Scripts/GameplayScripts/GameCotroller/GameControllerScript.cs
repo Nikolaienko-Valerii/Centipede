@@ -157,7 +157,13 @@ public class GameControllerScript : MonoBehaviour
         ScoreText.text = Score.ToString("D6");
     }
 
-    #region CentipedeSpawning
+    public void AddLife()
+    {
+        Lifes = Mathf.Min(Lifes + 1, MaxLifes);
+        healthBar[Lifes - 2].enabled = true; //-1 because displaying extra lifes, not all lifes and -1 more because of array starting from 0
+    }
+
+    #region Spawning Centipede
 
     void SpawnCentipedes()  
     {
@@ -290,6 +296,7 @@ public class GameControllerScript : MonoBehaviour
         levelLost = false;
         DestroyAllCentipedes();
         DestroyPlayer();
+        DestroyBonuses();
         SpawnPlayer();
         SpawnCentipedes();
     }
@@ -302,7 +309,7 @@ public class GameControllerScript : MonoBehaviour
 
     #endregion
 
-    #region SmallGameControls
+    #region Destroying Objects and Spawning Player
     void DestroyAllCentipedes()
     {
         foreach (var part in centipedes)
@@ -316,14 +323,22 @@ public class GameControllerScript : MonoBehaviour
         Destroy(player);
     }
 
+    void DestroyBonuses()
+    {
+        var bonuses = GameObject.FindGameObjectsWithTag("Bonus");
+        foreach (var bonus in bonuses)
+        {
+            Destroy(bonus);
+        }
+    }
+
     void SpawnPlayer()
     {
         //Placing player on the bottom midle => yPos = camera.y - camera.orthographicSize + half player width (is 0.5 because everything is 1x1)
         float xPos = Camera.main.transform.position.x;
         float yPos = Camera.main.transform.position.y - Camera.main.orthographicSize + 0.5f; 
 
-        player = Instantiate(PlayerPrefab, new Vector3(xPos, yPos, 0), new Quaternion()); //TODO calculate position
-        player.tag = "Player";
+        player = Instantiate(PlayerPrefab, new Vector3(xPos, yPos, 0), new Quaternion());
     }
     #endregion
 }
